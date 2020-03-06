@@ -7,7 +7,7 @@ class LSloss:
         self.fake = 0
     
     @staticmethod
-    def discriminator_loss(self, d_real, d_gen, real):
+    def discriminator_loss(self, d_real, d_gen):
         return self.mse(d_real, self.real) + self.mse(d_gen, self.fake)
     
     @staticmethod

@@ -1,14 +1,13 @@
 import torch.nn as nn
 
 
-class Generator(nn.module):
+class Generator(nn.Module):
     
-    def __init__(self, ngf = 3, nz, nc, ngpu):
+    def __init__(self, nz, ngf, nc, ngpu):
         super(Generator,self).__init__()
-        self.ngpu = ngpu
         self.ngf = ngf
         self.nz = nz
-        self.nc = nc/
+        self.nc = nc
         self.model = nn.Sequential(
             # input is Z, going into a convolution
             nn.ConvTranspose2d(     nz, ngf * 8, 4, 1, 0, bias=False),
@@ -32,11 +31,9 @@ class Generator(nn.module):
             # state size. (nc) x 64 x 64
         )
 
+
     def forward(self, input_):
-        if input_.is_cuda and self.ngpu > 1:
-            output = nn.parallel.data_parallel(self.main, input_, range(self.ngpu))
-        else:
-            output = self.model(input_)
-        
-        return output
+        return self.model(input_)
+            
+    
         
