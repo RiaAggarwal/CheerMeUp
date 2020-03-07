@@ -4,10 +4,8 @@ import numpy as np
 import torch.nn.functional as F
 
 class Discriminator(nn.Module):
-	def __init__(self, input_size, nd, ndf):
+	def __init__(self, nd, ndf):
 		super(Discriminator, self).__init__()
-		self.input_size = input_size
-		self.ndf = ndf
 
 		self.model = nn.Sequential(
             # input is (nc) x 64 x 64

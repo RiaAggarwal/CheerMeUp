@@ -17,18 +17,28 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 dataloader = get_loader('./file_names.csv', transform, batch_size=args['batch_size'], shuffle=True, 
                         num_workers=args['num_workers'])
 
-
 nz = 100
 ngf = 64
 nc = 3
 ngpu = 1
 
-input_size= 64
 ndf = 64
+
+# custom weights initialization called on netG and netD
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        m.weight.data.normal_(0.0, 0.02)
+    elif classname.find('BatchNorm') != -1:
+        m.weight.data.normal_(1.0, 0.02)
+        m.bias.data.fill_(0)
 
 
 generator_ = generator.Generator(nz, ngf, nc, ngpu).to(device)
-discriminator_ = discriminator.Discriminator(input_size, nc, ndf).to(device)
+discriminator_ = discriminator.Discriminator(nc, ndf).to(device)
+
+generator_.apply(weights_init)
+discriminator_.apply(weights_init)
 
 params_gen = list(generator_.parameters())
 params_dis = list(discriminator_.parameters())
@@ -43,10 +53,9 @@ for epoch in range(args['epochs']):
     for idx, (imgs) in enumerate(dataloader):
         discriminator_.zero_grad()
         generator_.zero_grad()
-        
-        x_real = imgs.to(device)
-        noise = torch.randn(batch_size, nz, 1, 1, device=device)
-        z = torch.randn(imgs.shape[0],nz).to(device)
+        x_real = imgs[:,:3, :, :].to(device)
+        print(x_real.size())
+        z = torch.randn(imgs.shape[0], nz, 1, 1, device=device) 
         
         x_gen = generator_(z)
         dg_out = discriminator_(x_gen)

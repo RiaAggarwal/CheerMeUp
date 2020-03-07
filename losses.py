@@ -7,10 +7,10 @@ class LSloss:
         self.fake = 0
     
     @staticmethod
-    def discriminator_loss(self, d_real, d_gen):
+    def discriminator_loss(d_real, d_gen):
         return self.mse(d_real, self.real) + self.mse(d_gen, self.fake)
     
     @staticmethod
-    def generator_loss(self, dg_out):
+    def generator_loss(dg_out):
         return self.mse(dg_out, self.real)
         
