@@ -41,18 +41,21 @@ for epoch in range(args['epochs']):
     discriminator_.train()
     
     for idx, (imgs) in enumerate(dataloader):
-        x_real = imgs.to(device)
-        z = torch.randn(imgs.shape[0],args['noise_len']).to(device)
+        discriminator_.zero_grad()
+        generator_.zero_grad()
         
-        x_gen = generator(z)
-        dg_out = discriminator(x_gen)
-        dr_out = discriminator(x_real)
+        x_real = imgs.to(device)
+        noise = torch.randn(batch_size, nz, 1, 1, device=device)
+        z = torch.randn(imgs.shape[0],nz).to(device)
+        
+        x_gen = generator_(z)
+        dg_out = discriminator_(x_gen)
+        dr_out = discriminator_(x_real)
         
         g_loss = LSloss.generator_loss(dg_out)
         d_loss = LSloss.discriminator_loss(dr_out,dg_out)
         
-        discriminator_.zero_grad()
-        generator_.zero_grad()
+
         
         g_loss.backward()
         d_loss.backward()
