@@ -17,6 +17,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 dataloader = get_loader('./file_names.csv', transform, batch_size=args['batch_size'], shuffle=True, 
                         num_workers=args['num_workers'])
 
+batch_size = args["batch_size"]
 nz = 100
 ngf = 64
 nc = 3
@@ -46,6 +47,10 @@ params_dis = list(discriminator_.parameters())
 optimizer_gen = torch.optim.Adam(params_gen, lr=args['learning_rate_gen'])
 optimizer_dis = torch.optim.Adam(params_dis, lr=args['learning_rate_dis'])
 
+loss = nn.MSELoss()
+ones = torch.ones(batch_size,1,1,1).to(device)
+zeros = torch.zeros(batch_size,1,1,1).to(device)
+
 for epoch in range(args['epochs']):
     generator_.train()
     discriminator_.train()
@@ -60,19 +65,19 @@ for epoch in range(args['epochs']):
         x_gen = generator_(z)
         dg_out = discriminator_(x_gen)
         dr_out = discriminator_(x_real)
+        print(dg_out.size())
         
-        g_loss = LSloss.generator_loss(dg_out)
-        d_loss = LSloss.discriminator_loss(dr_out,dg_out)
+        g_loss = loss(dg_out, ones)
+        d_loss = loss(dr_out, ones)+ loss(dg_out, zeros)
         
 
-        
         g_loss.backward()
         d_loss.backward()
         
         optimizer_gen.step()
         optimizer_dis.step()
         
-        print(f"epoch :{epoch}, g_loss : {g_loss.item()}, d_loss : {d_loss.item()}")
+        print(f"epoch :{epoch}, g_loss : {g_loss.mean().item()}, d_loss : {d_loss.mean().item()}")
 
         
         

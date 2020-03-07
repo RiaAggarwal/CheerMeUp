@@ -1,16 +1,19 @@
 import torch.nn as nn
+import torch
 
 class LSloss:
+    
+    
     def __init__(self):
-        self.mse = nn.MSELoss()
-        self.real = 1
-        self.fake = 0
+        pass
     
     @staticmethod
     def discriminator_loss(d_real, d_gen):
-        return self.mse(d_real, self.real) + self.mse(d_gen, self.fake)
+        mse = nn.MSELoss()
+        return mse(d_real, torch.ones_like(d_real)) + mse(d_gen, torch.zeros_like(d_gen))
     
     @staticmethod
     def generator_loss(dg_out):
-        return self.mse(dg_out, self.real)
+        mse = nn.MSELoss()
+        return mse(dg_out, torch.ones_like(dg_out))
         
