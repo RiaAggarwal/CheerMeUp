@@ -16,6 +16,7 @@ args = {
     'num_workers': 16,
     'learning_rate_gen': 1e-3,
     'learning_rate_dis': 1e-3,
-    'noise_len': 100
+    'noise_len': 100,
+    'beta1': 0.5
 }
 

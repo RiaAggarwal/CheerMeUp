@@ -44,8 +44,8 @@ discriminator_.apply(weights_init)
 params_gen = list(generator_.parameters())
 params_dis = list(discriminator_.parameters())
 
-optimizer_gen = torch.optim.Adam(params_gen, lr=args['learning_rate_gen'])
-optimizer_dis = torch.optim.Adam(params_dis, lr=args['learning_rate_dis'])
+optimizer_gen = torch.optim.Adam(params_gen, lr=args['learning_rate_gen'], betas=(args['beta1'], 0.999))
+optimizer_dis = torch.optim.Adam(params_dis, lr=args['learning_rate_dis'], betas=(args['beta1'], 0.999))
 
 loss = nn.MSELoss()
 ones = torch.ones(batch_size,1,1,1).to(device)
@@ -62,20 +62,28 @@ for epoch in range(args['epochs']):
         print(x_real.size())
         z = torch.randn(imgs.shape[0], nz, 1, 1, device=device) 
         
-        x_gen = generator_(z)
-        dg_out = discriminator_(x_gen)
         dr_out = discriminator_(x_real)
+        d_loss_real = loss(dr_out, ones)
+        d_loss_real.backward()
+
+        x_gen = generator_(z)
+        dg_out = discriminator_(x_gen.detach())
+        d_loss_fake = loss(dg_out, zeros)
+        d_loss_fake.backward()
+
+        d_loss = d_loss_real + d_loss_fake
+        optimizer_dis.step()
+
+        
         print(dg_out.size())
         
+        # g_loss = loss(dg_out, ones)
+        # d_loss = loss(dr_out, ones) + loss(dg_out, zeros)
+        
+        dg_out = discriminator_(x_gen)
         g_loss = loss(dg_out, ones)
-        d_loss = loss(dr_out, ones)+ loss(dg_out, zeros)
-        
-
         g_loss.backward()
-        d_loss.backward()
-        
         optimizer_gen.step()
-        optimizer_dis.step()
         
         print(f"epoch :{epoch}, g_loss : {g_loss.mean().item()}, d_loss : {d_loss.mean().item()}")
 
