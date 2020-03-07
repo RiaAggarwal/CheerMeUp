@@ -27,8 +27,8 @@ input_size= 64
 ndf = 64
 
 
-generator_ = generator.Generator(nz, ngf, nc, ngpu)
-discriminator_ = discriminator.Discriminator(input_size, nc, ndf)
+generator_ = generator.Generator(nz, ngf, nc, ngpu).to(device)
+discriminator_ = discriminator.Discriminator(input_size, nc, ndf).to(device)
 
 params_gen = list(generator_.parameters())
 params_dis = list(discriminator_.parameters())
@@ -42,7 +42,7 @@ for epoch in range(args['epochs']):
     
     for idx, (imgs) in enumerate(dataloader):
         x_real = imgs.to(device)
-        z = torch.randn(imgs.shape[0],args['noise_len'])
+        z = torch.randn(imgs.shape[0],args['noise_len']).to(device)
         
         x_gen = generator(z)
         dg_out = discriminator(x_gen)
