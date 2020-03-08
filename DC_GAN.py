@@ -23,12 +23,7 @@ d_cp = 'model_cps/generator_epoch_latest.pth'
 g_cp = 'model_cps/generator_epoch_latest.pth'
 
 batch_size = args["batch_size"]
-nz = 100
-ngf = 64
-nc = 3
-ngpu = 1
 
-ndf = 64
 
 # custom weights initialization called on netG and netD
 def weights_init(m):
