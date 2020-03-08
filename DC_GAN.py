@@ -52,6 +52,7 @@ loss = nn.MSELoss()
 ones = torch.ones(batch_size,1,1,1).to(device)
 zeros = torch.zeros(batch_size,1,1,1).to(device)
 
+fixed_noise = torch.randn(batch_size, nz, 1, 1, device=device) 
 
 
 for epoch in range(args['epochs']):
@@ -67,7 +68,7 @@ for epoch in range(args['epochs']):
         generator_.zero_grad()
         x_real = imgs[:,:3, :, :].to(device)
         #print(x_real.size())
-        z = torch.randn(imgs.shape[0], nz, 1, 1, device=device) 
+        z = torch.randn(batch_size, nz, 1, 1, device=device) 
         
         dr_out = discriminator_(x_real)
         d_loss_real = loss(dr_out, ones)
@@ -96,8 +97,16 @@ for epoch in range(args['epochs']):
         
     t2 = time.time()
         
-    print(f"epoch :{epoch}, g_loss : {sum(g_loss_arr)/len(g_loss_arr)}, d_loss : {sum(d_loss_arr)/len(d_loss_arr)}, took {t1-t2} seconds")
+    print(f"epoch :{epoch}, g_loss : {sum(g_loss_arr)/len(g_loss_arr)}, d_loss : {sum(d_loss_arr)/len(d_loss_arr)}, took {t2-t1} seconds")
 
+    # do checkpointing
+    torch.save(generator_.state_dict(), f'model_cps/generator_epoch_{epoch}.pth')
+    torch.save(discriminator_.state_dict(), f'model_cps/discriminator_epoch_{epoch}.pth')
+    
+    if (epoch %3) == 0 :
+        fake = genrator_(fixed_noise)
+        torch.utils.save_image(fake.detach(),f'results/generated/fake_samples_epoch_{epoch}.png',normalize=True)
+        
         
         
         
