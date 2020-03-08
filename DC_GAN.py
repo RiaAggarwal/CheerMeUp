@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from config import *
 from losses import LSloss 
 from models import generator,discriminator
+import time
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 dataloader = get_loader('./file_names.csv', transform, batch_size=args['batch_size'], shuffle=True, 
@@ -51,15 +52,21 @@ loss = nn.MSELoss()
 ones = torch.ones(batch_size,1,1,1).to(device)
 zeros = torch.zeros(batch_size,1,1,1).to(device)
 
+
+
 for epoch in range(args['epochs']):
     generator_.train()
     discriminator_.train()
+    g_loss_arr = []
+    d_loss_arr = []
+    
+    t1 = time.time()
     
     for idx, (imgs) in enumerate(dataloader):
         discriminator_.zero_grad()
         generator_.zero_grad()
         x_real = imgs[:,:3, :, :].to(device)
-        print(x_real.size())
+        #print(x_real.size())
         z = torch.randn(imgs.shape[0], nz, 1, 1, device=device) 
         
         dr_out = discriminator_(x_real)
@@ -75,7 +82,7 @@ for epoch in range(args['epochs']):
         optimizer_dis.step()
 
         
-        print(dg_out.size())
+        #print(dg_out.size())
         
         # g_loss = loss(dg_out, ones)
         # d_loss = loss(dr_out, ones) + loss(dg_out, zeros)
@@ -84,8 +91,12 @@ for epoch in range(args['epochs']):
         g_loss = loss(dg_out, ones)
         g_loss.backward()
         optimizer_gen.step()
+        g_loss_arr.append(g_loss.item())
+        d_loss_arr.append(d_loss.item())
         
-        print(f"epoch :{epoch}, g_loss : {g_loss.mean().item()}, d_loss : {d_loss.mean().item()}")
+    t2 = time.time()
+        
+    print(f"epoch :{epoch}, g_loss : {sum(g_loss_arr)/len(g_loss_arr)}, d_loss : {sum(d_loss_arr)/len(d_loss_arr)}, took {t1-t2} seconds")
 
         
         
