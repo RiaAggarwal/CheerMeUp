@@ -1,4 +1,5 @@
 import torch 
+import torchvision
 import torch.nn as nn
 import torchvision.transforms as transforms
 import torch.utils.data as data
@@ -45,8 +46,11 @@ discriminator_ = discriminator.Discriminator(nc, ndf).to(device)
 generator_.apply(weights_init)
 discriminator_.apply(weights_init)
 
-generator_.load_state_dict(torch.load(g_cp))
-discriminator_.load_state_dict(torch.load(d_cp))
+try :
+    generator_.load_state_dict(torch.load(g_cp))
+    discriminator_.load_state_dict(torch.load(d_cp))
+except:
+    pass
 
 
 params_gen = list(generator_.parameters())
@@ -115,7 +119,7 @@ for epoch in range(args['epochs']):
     
     if (epoch %3) == 0 :
         fake = generator_(fixed_noise)
-        torch.utils.save_image(fake.detach(),f'results/generated/fake_samples_epoch_{epoch}.png',normalize=True)
+        torchvision.utils.save_image(fake.detach(),f'results/generated/fake_samples_epoch_{epoch}.png',normalize=True)
         
         
         
