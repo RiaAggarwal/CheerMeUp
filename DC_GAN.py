@@ -104,7 +104,7 @@ for epoch in range(args['epochs']):
     torch.save(discriminator_.state_dict(), f'model_cps/discriminator_epoch_{epoch}.pth')
     
     if (epoch %3) == 0 :
-        fake = genrator_(fixed_noise)
+        fake = generator_(fixed_noise)
         torch.utils.save_image(fake.detach(),f'results/generated/fake_samples_epoch_{epoch}.png',normalize=True)
         
         
