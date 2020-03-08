@@ -18,6 +18,9 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 dataloader = get_loader('./file_names.csv', transform, batch_size=args['batch_size'], shuffle=True, 
                         num_workers=args['num_workers'])
 
+d_cp = 'model_cps/generator_epoch_latest.pth'
+g_cp = 'model_cps/generator_epoch_latest.pth'
+
 batch_size = args["batch_size"]
 nz = 100
 ngf = 64
@@ -41,6 +44,10 @@ discriminator_ = discriminator.Discriminator(nc, ndf).to(device)
 
 generator_.apply(weights_init)
 discriminator_.apply(weights_init)
+
+generator_.load_state_dict(torch.load(g_cp))
+discriminator_.load_state_dict(torch.load(d_cp))
+
 
 params_gen = list(generator_.parameters())
 params_dis = list(discriminator_.parameters())
@@ -97,11 +104,14 @@ for epoch in range(args['epochs']):
         
     t2 = time.time()
         
-    print(f"epoch :{epoch}, g_loss : {sum(g_loss_arr)/len(g_loss_arr)}, d_loss : {sum(d_loss_arr)/len(d_loss_arr)}, took {t2-t1} seconds")
+    print(f"epoch :{epoch}, g_loss : {np.array(g_loss_arr).mean()}, d_loss : {np.array(d_loss_arr).mean()}, took {t2-t1} seconds")
 
     # do checkpointing
     torch.save(generator_.state_dict(), f'model_cps/generator_epoch_{epoch}.pth')
     torch.save(discriminator_.state_dict(), f'model_cps/discriminator_epoch_{epoch}.pth')
+    
+    torch.save(generator_.state_dict(), 'model_cps/generator_epoch_latest.pth')
+    torch.save(discriminator_.state_dict(), 'model_cps/discriminator_epoch_latest.pth')
     
     if (epoch %3) == 0 :
         fake = generator_(fixed_noise)
