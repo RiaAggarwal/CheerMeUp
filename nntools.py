@@ -316,7 +316,7 @@ class Experiment(object):
             g_eloss = self.g_stats_manager.summarize()
             
             
-            print(f'epoch : {epoch}, generator loss : {g_eloss : 0.4f}, discriminator loss : {d_eloss: 0.4f}' )
+            print(f'epoch : {epoch}, generator loss : {g_eloss : 0.6f}, discriminator loss : {d_eloss: 0.6f}' )
             self.history['losses'].append((g_eloss, d_eloss))
 
             if(g_eloss < min_g_eloss):
