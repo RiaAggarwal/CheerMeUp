@@ -19,7 +19,7 @@ args = {
 
 	'epochs' : 500,
 
-	'batch_size' : 256,
+	'batch_size' : 128,
 
 	'num_workers' : 16,
     
@@ -33,23 +33,23 @@ args = {
 
 	'ndf' : 64,
 
-	'model_path' : './results/gan_1',
+	'model_path' : './results/gan_dc_hyperparameters',
 
 	'Discriminator' : discriminator,
 
 	'Generator' : generator,
 
-	'num_layers' : 1,
+	# 'num_layers' : 1,
 
 	'loss_criterion' : nn.MSELoss(),
 
-	'learning_rate_gen': 1e-3,
+	'learning_rate_gen': 2e-4,
     
-	'learning_rate_dis': 1e-3,
+	'learning_rate_dis': 2e-4,
     
 	'noise_len': 100,
     
-	'beta' : 0.9,
+	'beta' : 0.5,
 
 	'transforms' : transform,
 

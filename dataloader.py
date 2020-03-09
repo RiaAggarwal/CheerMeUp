@@ -28,9 +28,11 @@ class FergDataset(data.Dataset):
     def __getitem__(self, idx):
         img_name   = self.data.iloc[idx, 0]
         img   = Image.open(img_name)
-        
+
         if self.transform:
             img = self.transform(img)
+
+        img = 2.0*img - 1
         return img
     
 def get_loader(csv_file, transforms, batch_size, num_workers, shuffle):

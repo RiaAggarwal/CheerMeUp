@@ -131,7 +131,7 @@ dmypy.json
 data/
 model_cps/
 log*
-results/gen*
+results/
 *.tar
 *.json
 
