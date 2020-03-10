@@ -269,7 +269,7 @@ class Experiment(object):
             s = time()
             self.d_stats_manager.init()
             self.g_stats_manager.init()
-            for idx, (images) in enumerate(self.dataloader):
+            for idx, (images, label) in enumerate(self.dataloader):
 
                 if(list(images.size())[0] == 1):
                     continue

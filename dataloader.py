@@ -16,6 +16,7 @@ from PIL import Image
 
 # In[3]:
 
+expressions = ['anger', 'disgust', 'fear', 'joy', 'neutral', 'sadness', 'surprise']
 
 class FergDataset(data.Dataset):
     def __init__(self, csv_file, transform=None):
@@ -29,11 +30,18 @@ class FergDataset(data.Dataset):
         img_name   = self.data.iloc[idx, 0]
         img   = Image.open(img_name)
 
+        label = -1*np.ones(8)
+        tt = img_name.split('/')
+        if tt[3] in ['jules', 'malcolm', 'ray']:
+            label[0] = 1
+        label[expressions.index(tt[4][1])+1] = 1
+        label = torch.Tensor(label)
+
         if self.transform:
             img = self.transform(img)
 
         img = 2.0*img - 1
-        return img
+        return img, label
     
 def get_loader(csv_file, transforms, batch_size, num_workers, shuffle):
     fergDataset = FergDataset(csv_file, transforms)
