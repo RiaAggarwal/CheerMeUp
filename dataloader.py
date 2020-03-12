@@ -52,6 +52,34 @@ def get_loader(csv_file, transforms, batch_size, num_workers, shuffle):
                                               num_workers=num_workers)
     return data_loader
 
+class FergDataset2(data.Dataset):
+    def __init__(self, csv_file, transform=None):
+        self.data = pd.read_csv(csv_file)
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self,idx):
+        img_name = self.data.iloc[idx,0]
+        img = Image.open(img_name)
+
+        gender = self.data.iloc[idx,1]
+        emotion = self.data.iloc[idx,2]
+
+        if(self.transform):
+            img = self.transform(img)
+
+        img = 2*img-1
+        return img, gender, emotion
+
+def get_loader2(csv_file, transforms, batch_size, num_workers, shuffle):
+    fergDataset = FergDataset2(csv_file, transforms)
+
+    data_loader = torch.utils.data.DataLoader(dataset=fergDataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
+
+    return data_loader
+
 
 # In[ ]:
 
