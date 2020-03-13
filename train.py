@@ -47,4 +47,5 @@ exp1 = nt.Experiment(generator_, discriminator_, device, criterion, optimizer_ge
                      output_dir=args['model_path'])
 
 
-exp1.run(num_epochs=args['epochs'])
+if __name__ == "__main__":
+	exp1.run(num_epochs=args['epochs'])

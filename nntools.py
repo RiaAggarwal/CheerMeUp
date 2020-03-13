@@ -269,7 +269,7 @@ class Experiment(object):
             s = time()
             self.d_stats_manager.init()
             self.g_stats_manager.init()
-            for idx, (images, label) in enumerate(self.dataloader):
+            for idx, (images) in enumerate(self.dataloader):
 
                 if(list(images.size())[0] == 1):
                     continue
@@ -277,7 +277,9 @@ class Experiment(object):
                 
                 ones = torch.ones(list(images.size())[0],1,1,1).to(device)
                 zeros = torch.zeros(list(images.size())[0],1,1,1).to(device)
-                
+                ones_d = ones*0.8
+                zeros_d = ones*0.2
+
                 self.discriminator.zero_grad()
                 self.generator.zero_grad()
                 
@@ -286,12 +288,12 @@ class Experiment(object):
                 z = torch.randn(list(images.size())[0], args["nz"], 1, 1, device=device) 
 
                 dr_out = self.discriminator(x_real)
-                d_loss_real = self.criterion(dr_out, ones)
+                d_loss_real = self.criterion(dr_out, ones_d)
                 d_loss_real.backward()
 
                 x_gen = self.generator(z)
                 dg_out = self.discriminator(x_gen.detach())
-                d_loss_fake = self.criterion(dg_out, zeros)
+                d_loss_fake = self.criterion(dg_out, zeros_d)
                 d_loss_fake.backward()
 
                 d_loss = d_loss_real + d_loss_fake

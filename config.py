@@ -11,7 +11,7 @@ size = (64,64)
 transform = transforms.Compose([transforms.Resize(size), 
                                 transforms.ToTensor()])
 
-data_path = f"{baseDataPath}/file_names.csv"
+data_path = f"{baseDataPath}/file_names_jules.csv"
 
 
 args = {
@@ -33,7 +33,7 @@ args = {
 
 	'ndf' : 64,
 
-	'model_path' : './results/gan_dc_hyperparameters',
+	'model_path' : './results/gan_jules_noisyLabels',
 
 	'Discriminator' : discriminator,
 
