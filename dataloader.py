@@ -30,13 +30,6 @@ class FergDataset(data.Dataset):
         img_name   = self.data.iloc[idx, 0]
         img   = Image.open(img_name)
 
-        # label = -1*np.ones(8)
-        # tt = img_name.split('/')
-        # if tt[3] in ['jules', 'malcolm', 'ray']:
-        #     label[0] = 1
-        # label[expressions.index(tt[4].split('_')[1])+1] = 1
-        # label = torch.Tensor(label)
-
         if self.transform:
             img = self.transform(img)
 

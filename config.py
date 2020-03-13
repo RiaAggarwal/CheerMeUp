@@ -33,7 +33,7 @@ args = {
 
 	'ndf' : 64,
 
-	'model_path' : './results/gan_jules_noisyLabels',
+	'model_path' : './results/gan_dc_hyperparameters_jules',
 
 	'Discriminator' : discriminator,
 

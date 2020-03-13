@@ -344,3 +344,13 @@ class Experiment(object):
             
             
         print(f"Finished training for {num_epochs} epochs")
+
+    def eval(self, num):
+
+    	self.generator.eval()
+    	device = self.device
+    	z = torch.randn(num, args["nz"], 1, 1, device=device)
+    	images = self.generator(z)
+
+    	return images, z.squeeze()
+
